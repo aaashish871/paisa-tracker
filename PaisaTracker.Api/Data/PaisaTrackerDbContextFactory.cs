@@ -8,7 +8,9 @@ public class PaisaTrackerDbContextFactory : IDesignTimeDbContextFactory<PaisaTra
     public PaisaTrackerDbContext CreateDbContext(string[] args)
     {
         var optionsBuilder = new DbContextOptionsBuilder<PaisaTrackerDbContext>();
-        optionsBuilder.UseSqlite("Data Source=paisatracker.db");
+        var connectionString = Environment.GetEnvironmentVariable("ConnectionStrings__DefaultConnection")
+            ?? "Host=localhost;Database=paisatracker;Username=postgres;Password=postgres";
+        optionsBuilder.UseNpgsql(connectionString);
         return new PaisaTrackerDbContext(optionsBuilder.Options);
     }
 }

@@ -2,8 +2,9 @@ import { Injectable, signal } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, tap } from 'rxjs';
 import { LoginRequest, LoginResponse } from './auth.models';
+import { environment } from '../../environments/environment';
 
-const BASE_URL = 'http://localhost:5015/api';
+const BASE_URL = environment.apiUrl;
 const STORAGE_KEY = 'paisa_auth';
 
 interface StoredAuth {
