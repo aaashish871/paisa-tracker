@@ -1,0 +1,17 @@
+# .NET
+PaisaTracker.Api/bin/
+PaisaTracker.Api/obj/
+*.db
+*.db-shm
+*.db-wal
+
+# Angular
+PaisaTracker.Client/node_modules/
+PaisaTracker.Client/dist/
+PaisaTracker.Client/.angular/
+
+# IDE / OS
+.vs/
+.vscode/
+Thumbs.db
+.DS_Store

@@ -1,0 +1,92 @@
+<div class="kpi-row">
+  <div class="kpi">
+    <div class="lbl">Total Balance</div>
+    <div class="val">{{ totalBalance | currency:'INR':'symbol':'1.0-0' }}</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Accounts</div>
+    <div class="val">{{ accounts.length }}</div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <h3>Bank Accounts</h3>
+    <button class="btn btn-primary" (click)="openAdd()">+ Add Account</button>
+  </div>
+  <div class="panel-body">
+    @if (loading) {
+      <div class="empty-hint">Loading accounts...</div>
+    } @else if (error) {
+      <div class="empty-hint">{{ error }}</div>
+    } @else if (accounts.length === 0) {
+      <div class="empty-hint">No accounts yet. Click "+ Add Account" to create your first one.</div>
+    } @else {
+      <table>
+        <thead>
+          <tr>
+            <th>Account</th><th>Number</th><th>Type</th><th class="num">Balance</th><th></th>
+          </tr>
+        </thead>
+        <tbody>
+          @for (a of accounts; track a.id) {
+            <tr>
+              <td><span class="avatar-sm">{{ a.name.charAt(0) }}</span>{{ a.name }}<div style="font-size:11px;color:var(--text-faint)">{{ a.bankName }}</div></td>
+              <td>{{ a.accountNumber || '—' }}</td>
+              <td>{{ a.type }}</td>
+              <td class="num">{{ a.balance | currency:'INR':'symbol':'1.0-0' }}</td>
+              <td class="num">
+                <button class="btn btn-ghost" (click)="openEdit(a)">Edit</button>
+                <button class="btn btn-danger" (click)="remove(a)">Delete</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>
+
+<div class="modal-backdrop" [class.show]="showModal">
+  <div class="modal">
+    <h3>{{ editingId === null ? 'Add Account' : 'Edit Account' }}</h3>
+
+    <div class="field">
+      <label>Account Name</label>
+      <input type="text" [(ngModel)]="form.name" placeholder="e.g. HDFC Savings">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Bank Name</label>
+        <input type="text" [(ngModel)]="form.bankName" placeholder="e.g. HDFC Bank">
+      </div>
+      <div class="field">
+        <label>Account Number</label>
+        <input type="text" [(ngModel)]="form.accountNumber" placeholder="Optional">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Type</label>
+        <select [(ngModel)]="form.type">
+          @for (t of accountTypes; track t) {
+            <option [value]="t">{{ t }}</option>
+          }
+        </select>
+      </div>
+      <div class="field">
+        <label>Balance (₹)</label>
+        <input type="number" [(ngModel)]="form.balance">
+      </div>
+    </div>
+    <div class="field">
+      <label>Notes</label>
+      <input type="text" [(ngModel)]="form.notes" placeholder="Optional">
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" (click)="closeModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="save()">Save</button>
+    </div>
+  </div>
+</div>

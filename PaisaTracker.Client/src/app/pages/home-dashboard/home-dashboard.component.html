@@ -1,0 +1,67 @@
+<div class="kpi-row">
+  <div class="kpi">
+    <div class="lbl">Total Balance</div>
+    <div class="val">{{ totalBalance | currency:'INR':'symbol':'1.0-0' }}</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Credit Card Due</div>
+    <div class="val">{{ totalCardDue | currency:'INR':'symbol':'1.0-0' }}</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Accounts</div>
+    <div class="val">{{ accounts.length }}</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Credit Cards</div>
+    <div class="val">{{ cards.length }}</div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <h3>Bank Accounts</h3>
+    <a routerLink="/home/accounts" class="btn btn-ghost">Manage →</a>
+  </div>
+  <div class="panel-body">
+    @if (loading) {
+      <div class="empty-hint">Loading...</div>
+    } @else if (accounts.length === 0) {
+      <div class="empty-hint">No accounts yet. <a routerLink="/home/accounts">Add one</a>.</div>
+    } @else {
+      <table>
+        <thead><tr><th>Account</th><th>Type</th><th class="num">Balance</th></tr></thead>
+        <tbody>
+          @for (a of accounts; track a.id) {
+            <tr><td>{{ a.name }}</td><td>{{ a.type }}</td><td class="num">{{ a.balance | currency:'INR':'symbol':'1.0-0' }}</td></tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <h3>Upcoming Card Dues</h3>
+    <a routerLink="/home/credit-cards" class="btn btn-ghost">Manage →</a>
+  </div>
+  <div class="panel-body">
+    @if (unpaidCards.length === 0) {
+      <div class="empty-hint">No unpaid credit cards. Nicely done.</div>
+    } @else {
+      <table>
+        <thead><tr><th>Card</th><th>Due Date</th><th class="num">Amount</th><th>Status</th></tr></thead>
+        <tbody>
+          @for (c of unpaidCards; track c.id) {
+            <tr>
+              <td>{{ c.name }}</td>
+              <td>{{ c.dueDate | date:'dd MMM yyyy' }}</td>
+              <td class="num">{{ c.currentOutstanding | currency:'INR':'symbol':'1.0-0' }}</td>
+              <td><span class="tag" [ngClass]="tagClass(c.status)">{{ c.status }}</span></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>

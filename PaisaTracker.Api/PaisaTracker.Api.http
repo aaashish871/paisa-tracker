@@ -1,0 +1,6 @@
+@PaisaTracker.Api_HostAddress = http://localhost:5015
+
+GET {{PaisaTracker.Api_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

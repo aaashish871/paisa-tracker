@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Paisa Tracker — Mockup</title>
+<style>
+  :root{
+    --bg:#f4f6f9; --surface:#ffffff; --surface-2:#eef1f6; --border:#e2e6ee;
+    --text:#1c2333; --text-dim:#5c6478; --text-faint:#8a90a3;
+    --accent:#3454d1; --accent-2:#7c5cff; --accent-soft:#e8ecff;
+    --good:#1c9d6b; --good-soft:#e3f7ee;
+    --warn:#c98a1a; --warn-soft:#fbf0dd;
+    --bad:#d64545; --bad-soft:#fce8e8;
+    --factory:#b5651d; --factory-soft:#fbe9d9; --factory-accent:#d97b2b;
+    --shadow: 0 1px 2px rgba(20,25,40,.04), 0 4px 16px rgba(20,25,40,.06);
+    --radius: 12px;
+  }
+  :root[data-theme="dark"]{
+    --bg:#12141c; --surface:#1b1f2a; --surface-2:#232838; --border:#2c3244;
+    --text:#e7e9f0; --text-dim:#a7acc0; --text-faint:#6d7285;
+    --accent:#7c93ff; --accent-2:#a78bfa; --accent-soft:#232a4a;
+    --good:#4ad393; --good-soft:#123328;
+    --warn:#e3ab4e; --warn-soft:#3a2c10;
+    --bad:#f07272; --bad-soft:#3a1a1a;
+    --factory:#e3924e; --factory-soft:#3a2716; --factory-accent:#e3924e;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --bg:#12141c; --surface:#1b1f2a; --surface-2:#232838; --border:#2c3244;
+      --text:#e7e9f0; --text-dim:#a7acc0; --text-faint:#6d7285;
+      --accent:#7c93ff; --accent-2:#a78bfa; --accent-soft:#232a4a;
+      --good:#4ad393; --good-soft:#123328;
+      --warn:#e3ab4e; --warn-soft:#3a2c10;
+      --bad:#f07272; --bad-soft:#3a1a1a;
+      --factory:#e3924e; --factory-soft:#3a2716; --factory-accent:#e3924e;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.35);
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0;padding:0;overflow-x:hidden}
+  html,body{max-width:100%}
+  body{
+    font-family: "Segoe UI", system-ui, -apple-system, "Inter", Roboto, sans-serif;
+    background:var(--bg); color:var(--text);
+    display:flex; min-height:100vh;
+  }
+  a{color:inherit;text-decoration:none}
+
+  /* ---------- Sidebar ---------- */
+  .sidebar{
+    width:230px; flex:0 0 230px; background:var(--surface); border-right:1px solid var(--border);
+    display:flex; flex-direction:column; height:100vh; position:sticky; top:0;
+  }
+  .brand{
+    display:flex; align-items:center; gap:10px; padding:18px 18px 14px;
+    border-bottom:1px solid var(--border);
+  }
+  .brand .mark{
+    width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--accent),var(--accent-2));
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:16px;flex:0 0 auto;
+  }
+  .brand .name{font-weight:700; font-size:15px; letter-spacing:.2px}
+  .brand .sub{font-size:11px;color:var(--text-faint)}
+
+  .mode-switch{
+    display:flex; margin:14px 14px 6px; background:var(--surface-2); border-radius:10px; padding:3px; gap:3px;
+  }
+  .mode-switch button{
+    flex:1; border:0; background:transparent; padding:8px 6px; border-radius:8px; font-size:12.5px; font-weight:600;
+    color:var(--text-dim); cursor:pointer; display:flex; align-items:center; justify-content:center; gap:6px;
+  }
+  .mode-switch button.active.home-active{background:var(--surface); color:var(--accent); box-shadow:var(--shadow)}
+  .mode-switch button.active.factory-active{background:var(--surface); color:var(--factory-accent); box-shadow:var(--shadow)}
+
+  .nav{flex:1; overflow-y:auto; padding:10px 12px}
+  .nav .group-label{
+    font-size:10.5px; text-transform:uppercase; letter-spacing:.06em; color:var(--text-faint);
+    padding:14px 10px 6px;
+  }
+  .nav a{
+    display:flex; align-items:center; gap:10px; padding:9px 10px; border-radius:8px;
+    font-size:13.5px; color:var(--text-dim); font-weight:500; margin-bottom:2px; cursor:pointer;
+  }
+  .nav a:hover{background:var(--surface-2); color:var(--text)}
+  .nav a.active{background:var(--accent-soft); color:var(--accent); font-weight:700}
+  body.factory-mode .nav a.active{color:var(--factory-accent)}
+  .nav a .ic{width:18px; text-align:center; font-size:14px}
+
+  .sidebar-footer{
+    padding:12px 18px; border-top:1px solid var(--border); font-size:11px; color:var(--text-faint);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .theme-toggle{
+    border:1px solid var(--border); background:var(--surface-2); border-radius:7px; padding:5px 8px;
+    cursor:pointer; font-size:12px; color:var(--text-dim);
+  }
+
+  /* ---------- Main ---------- */
+  .main{flex:1; min-width:0; display:flex; flex-direction:column}
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between; padding:16px 28px;
+    border-bottom:1px solid var(--border); background:var(--surface);
+    position:sticky; top:0; z-index:5;
+  }
+  .topbar h1{font-size:18px; margin:0; font-weight:700}
+  .topbar .crumb{font-size:12px; color:var(--text-faint); margin-top:2px}
+  .topbar-right{display:flex; align-items:center; gap:12px}
+  .avatar{
+    width:34px;height:34px;border-radius:50%;background:var(--surface-2); color:var(--text-dim);
+    display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px; border:1px solid var(--border);
+  }
+  .btn{
+    border:0; padding:9px 15px; border-radius:9px; font-size:13px; font-weight:600; cursor:pointer;
+    display:inline-flex; align-items:center; gap:6px;
+  }
+  .btn-primary{background:var(--accent); color:#fff}
+  body.factory-mode .btn-primary{background:var(--factory-accent)}
+  .btn-ghost{background:var(--surface-2); color:var(--text-dim); border:1px solid var(--border)}
+
+  .content{padding:24px 28px 60px; overflow-y:auto}
+  .page{display:none}
+  .page.active{display:block; animation:fade .18s ease}
+  @keyframes fade{from{opacity:0; transform:translateY(3px)} to{opacity:1; transform:none}}
+
+  /* KPI cards */
+  .kpi-row{display:grid; grid-template-columns:repeat(auto-fit,minmax(190px,1fr)); gap:14px; margin-bottom:22px}
+  .kpi{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius); padding:16px 18px;
+    box-shadow:var(--shadow);
+  }
+  .kpi .lbl{font-size:12px; color:var(--text-faint); font-weight:600; margin-bottom:8px}
+  .kpi .val{font-size:22px; font-weight:700}
+  .kpi .delta{font-size:11.5px; margin-top:6px; font-weight:600}
+  .delta.up{color:var(--good)} .delta.down{color:var(--bad)} .delta.flat{color:var(--text-faint)}
+
+  /* Panels / cards */
+  .panel{
+    background:var(--surface); border:1px solid var(--border); border-radius:var(--radius);
+    box-shadow:var(--shadow); margin-bottom:20px;
+  }
+  .panel-head{
+    display:flex; align-items:center; justify-content:space-between; padding:16px 18px; border-bottom:1px solid var(--border);
+  }
+  .panel-head h3{margin:0; font-size:14.5px; font-weight:700}
+  .panel-body{padding:16px 18px}
+  .two-col{display:grid; grid-template-columns:1.3fr .9fr; gap:18px}
+  @media(max-width:980px){.two-col{grid-template-columns:1fr}}
+
+  table{width:100%; border-collapse:collapse; font-size:13px}
+  thead th{
+    text-align:left; font-size:11px; text-transform:uppercase; letter-spacing:.04em; color:var(--text-faint);
+    padding:8px 10px; border-bottom:1px solid var(--border); font-weight:700;
+  }
+  tbody td{padding:11px 10px; border-bottom:1px solid var(--border); color:var(--text)}
+  tbody tr:last-child td{border-bottom:0}
+  tbody tr:hover{background:var(--surface-2)}
+  .num{text-align:right; font-variant-numeric:tabular-nums}
+
+  .tag{display:inline-flex; align-items:center; gap:4px; padding:3px 9px; border-radius:20px; font-size:11px; font-weight:700}
+  .tag.good{background:var(--good-soft); color:var(--good)}
+  .tag.warn{background:var(--warn-soft); color:var(--warn)}
+  .tag.bad{background:var(--bad-soft); color:var(--bad)}
+  .tag.neutral{background:var(--surface-2); color:var(--text-dim)}
+
+  .toolbar{display:flex; align-items:center; gap:10px; margin-bottom:16px; flex-wrap:wrap}
+  .search{
+    flex:1; min-width:180px; padding:9px 12px; border-radius:9px; border:1px solid var(--border);
+    background:var(--surface); color:var(--text); font-size:13px;
+  }
+  select, input[type=text], input[type=number], input[type=date]{
+    padding:9px 11px; border-radius:9px; border:1px solid var(--border); background:var(--surface); color:var(--text); font-size:13px;
+  }
+  .chip-row{display:flex; gap:8px; flex-wrap:wrap}
+  .chip{padding:6px 12px; border-radius:20px; background:var(--surface-2); border:1px solid var(--border); font-size:12px; font-weight:600; color:var(--text-dim); cursor:pointer}
+  .chip.active{background:var(--accent-soft); color:var(--accent); border-color:transparent}
+  body.factory-mode .chip.active{background:var(--factory-soft); color:var(--factory-accent)}
+
+  .empty-hint{color:var(--text-faint); font-size:12.5px; padding:20px; text-align:center}
+
+  /* Quick add form */
+  .quick-form{display:grid; grid-template-columns:repeat(6,1fr); gap:10px; align-items:end}
+  .quick-form .field{display:flex; flex-direction:column; gap:5px}
+  .quick-form label{font-size:11px; color:var(--text-faint); font-weight:600}
+  .quick-form .field.wide{grid-column:span 2}
+  @media(max-width:900px){.quick-form{grid-template-columns:repeat(2,1fr)}.quick-form .field.wide{grid-column:span 2}}
+
+  .progress{height:7px; border-radius:5px; background:var(--surface-2); overflow:hidden}
+  .progress > div{height:100%; background:var(--accent)}
+  body.factory-mode .progress > div{background:var(--factory-accent)}
+
+  .avatar-sm{width:28px;height:28px;border-radius:50%;background:var(--accent-soft); color:var(--accent); display:inline-flex;align-items:center;justify-content:center;font-size:11px;font-weight:700; margin-right:8px}
+  body.factory-mode .avatar-sm{background:var(--factory-soft); color:var(--factory-accent)}
+
+  .att-grid{display:grid; grid-template-columns:180px repeat(7,1fr); gap:0; font-size:12.5px}
+  .att-grid .h{font-weight:700; font-size:11px; color:var(--text-faint); text-align:center; padding:8px 4px; text-transform:uppercase}
+  .att-cell{display:flex;align-items:center;justify-content:center;padding:8px 4px; border-bottom:1px solid var(--border)}
+  .att-name{display:flex;align-items:center; padding:8px 4px; border-bottom:1px solid var(--border); font-weight:600}
+  .dot{width:22px;height:22px;border-radius:6px;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700; cursor:pointer}
+  .dot.P{background:var(--good-soft); color:var(--good)}
+  .dot.A{background:var(--bad-soft); color:var(--bad)}
+  .dot.H{background:var(--warn-soft); color:var(--warn)}
+
+  ::-webkit-scrollbar{width:9px;height:9px}
+  ::-webkit-scrollbar-thumb{background:var(--border); border-radius:5px}
+
+  .modal-backdrop{
+    position:fixed; inset:0; background:rgba(10,12,20,.45); display:none; align-items:center; justify-content:center; z-index:50;
+  }
+  .modal-backdrop.show{display:flex}
+  .modal{
+    background:var(--surface); border-radius:14px; width:420px; max-width:92vw; padding:20px; box-shadow:var(--shadow); border:1px solid var(--border);
+  }
+  .modal h3{margin:0 0 14px}
+  .modal .field{display:flex; flex-direction:column; gap:5px; margin-bottom:12px}
+  .modal .field label{font-size:12px; color:var(--text-faint); font-weight:600}
+  .modal .field input, .modal .field select{width:100%}
+  .modal-actions{display:flex; justify-content:flex-end; gap:10px; margin-top:6px}
+
+  .footnote{font-size:11px; color:var(--text-faint); text-align:center; margin-top:30px}
+</style>
+</head>
+<body>
+
+<div class="sidebar">
+  <div class="brand">
+    <div class="mark">₹</div>
+    <div>
+      <div class="name">Paisa Tracker</div>
+      <div class="sub">personal + factory ops</div>
+    </div>
+  </div>
+
+  <div class="mode-switch">
+    <button id="btn-home-mode" class="active home-active" onclick="setMode('home')">🏠 Home / Expenses</button>
+    <button id="btn-factory-mode" onclick="setMode('factory')">🏭 Factory</button>
+  </div>
+
+  <div class="nav" id="nav"></div>
+
+  <div class="sidebar-footer">
+    <span>v0.1 mockup</span>
+    <button class="theme-toggle" onclick="toggleTheme()">🌓 Theme</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="topbar">
+    <div>
+      <h1 id="page-title">Home Dashboard</h1>
+      <div class="crumb" id="page-crumb">Home / Expenses · Dashboard</div>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost" id="topbar-secondary-btn" style="display:none">Export</button>
+      <button class="btn btn-primary" id="topbar-primary-btn" style="display:none">+ Add</button>
+      <div class="avatar">AA</div>
+    </div>
+  </div>
+  <div class="content" id="content"></div>
+</div>
+
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal">
+    <h3 id="modal-title">Add item</h3>
+    <div id="modal-body"></div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" onclick="closeModal()">Cancel</button>
+      <button class="btn btn-primary" onclick="closeModal()">Save</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ================= DATA (mock only) ================= */
+const D = {
+  accounts:[
+    {name:'HDFC Savings', number:'•• 4821', type:'Savings', balance:184250, tag:'good'},
+    {name:'SBI Current', number:'•• 1190', type:'Current', balance:62300, tag:'good'},
+    {name:'ICICI Salary', number:'•• 7734', type:'Savings', balance:21875, tag:'warn'},
+    {name:'Cash in Hand', number:'—', type:'Cash', balance:6400, tag:'neutral'},
+  ],
+  cards:[
+    {name:'HDFC Regalia', due:'2026-08-05', total:38420, min:1900, status:'Unpaid', tagClass:'bad'},
+    {name:'Axis Flipkart', due:'2026-07-28', total:12980, min:650, status:'Due Soon', tagClass:'warn'},
+    {name:'SBI SimplyClick', due:'2026-07-15', total:9040, min:450, status:'Paid', tagClass:'good'},
+  ],
+  emis:[
+    {name:'Factory Machine Loan', principal:850000, monthly:18400, remaining:22, next:'2026-08-03'},
+    {name:'Home Renovation Loan', principal:300000, monthly:9200, remaining:11, next:'2026-08-07'},
+    {name:'Two-Wheeler EMI', principal:65000, monthly:3100, remaining:4, next:'2026-08-10'},
+  ],
+  expenses:[
+    {date:'2026-07-19', category:'Groceries', note:'Weekly vegetables & staples', method:'UPI', amount:1240},
+    {date:'2026-07-19', category:'Fuel', note:'Bike petrol', method:'Cash', amount:300},
+    {date:'2026-07-18', category:'Dining', note:'Family dinner', method:'Credit Card', amount:1850},
+    {date:'2026-07-17', category:'Utilities', note:'Mobile recharge', method:'UPI', amount:499},
+    {date:'2026-07-16', category:'Medical', note:'Pharmacy', method:'Cash', amount:620},
+  ],
+  bills:[
+    {name:'Electricity Board', category:'Utility', due:'2026-07-25', amount:3240, status:'Unpaid', tagClass:'bad'},
+    {name:'Broadband (ACT)', category:'Utility', due:'2026-07-22', amount:999, status:'Due Soon', tagClass:'warn'},
+    {name:'House Rent', category:'Rent', due:'2026-08-01', amount:18000, status:'Upcoming', tagClass:'neutral'},
+    {name:'LIC Premium', category:'Insurance', due:'2026-07-30', amount:5400, status:'Upcoming', tagClass:'neutral'},
+  ],
+  customers:[
+    {name:'Shree Textiles', contact:'Ramesh Patel · 98200 11223', outstanding:42500, orders:14, tagClass:'bad'},
+    {name:'Ganesh Traders', contact:'Suresh Iyer · 90040 55667', outstanding:0, orders:26, tagClass:'good'},
+    {name:'Om Sai Distributors', contact:'Vikram Shah · 97690 33221', outstanding:12800, orders:9, tagClass:'warn'},
+    {name:'Bright Retail Co.', contact:'Anita Desai · 98920 44556', outstanding:0, orders:31, tagClass:'good'},
+  ],
+  products:[
+    {name:'Cotton Roll — 40mm', category:'Finished Goods', price:145, stock:820, unit:'pcs'},
+    {name:'Poly Cover — Large', category:'Finished Goods', price:22, stock:4200, unit:'pcs'},
+    {name:'Woven Sack — 25kg', category:'Finished Goods', price:38, stock:1560, unit:'pcs'},
+    {name:'Zip Pouch — Medium', category:'Finished Goods', price:9, stock:210, unit:'pcs', low:true},
+  ],
+  materials:[
+    {name:'HDPE Granules', unit:'kg', stock:1240, reorder:500, supplier:'Vinayak Polymers'},
+    {name:'Cotton Yarn', unit:'kg', stock:340, reorder:400, supplier:'Shakti Yarns', low:true},
+    {name:'Printing Ink — Blue', unit:'ltr', stock:88, reorder:30, supplier:'ColorTech Chemicals'},
+    {name:'Packing Tape', unit:'roll', stock:520, reorder:100, supplier:'Om Packaging'},
+  ],
+  suppliers:[
+    {name:'Vinayak Polymers', contact:'Deepak Rao · 99870 12233', supplies:'HDPE Granules', payable:28400, tagClass:'bad'},
+    {name:'Shakti Yarns', contact:'Manoj Bhatt · 98650 88112', supplies:'Cotton Yarn', payable:0, tagClass:'good'},
+    {name:'ColorTech Chemicals', contact:'Firoz Khan · 90210 44778', supplies:'Printing Ink', payable:6200, tagClass:'warn'},
+    {name:'Om Packaging', contact:'Nilesh Jain · 98220 99887', supplies:'Packing Tape', payable:0, tagClass:'good'},
+  ],
+  sales:[
+    {date:'2026-07-19', customer:'Ganesh Traders', product:'Woven Sack — 25kg', qty:500, amount:19000},
+    {date:'2026-07-18', customer:'Shree Textiles', product:'Cotton Roll — 40mm', qty:120, amount:17400},
+    {date:'2026-07-17', customer:'Bright Retail Co.', product:'Poly Cover — Large', qty:2000, amount:44000},
+    {date:'2026-07-16', customer:'Om Sai Distributors', product:'Zip Pouch — Medium', qty:800, amount:7200},
+  ],
+  purchases:[
+    {date:'2026-07-18', supplier:'Vinayak Polymers', material:'HDPE Granules', qty:800, amount:96000},
+    {date:'2026-07-15', supplier:'ColorTech Chemicals', material:'Printing Ink — Blue', qty:40, amount:14800},
+    {date:'2026-07-12', supplier:'Shakti Yarns', material:'Cotton Yarn', qty:300, amount:54000},
+  ],
+  workers:[
+    {name:'Ramu Yadav', role:'Machine Operator', joined:'2022-03-01', wage:650, phone:'98700 12121'},
+    {name:'Sunita Devi', role:'Packing', joined:'2023-06-15', wage:520, phone:'97650 34343'},
+    {name:'Iqbal Sheikh', role:'Supervisor', joined:'2021-01-10', wage:800, phone:'99880 56565'},
+    {name:'Meena Kumari', role:'Packing', joined:'2024-02-20', wage:520, phone:'90210 78787'},
+    {name:'Dinesh Chauhan', role:'Machine Operator', joined:'2022-11-05', wage:650, phone:'98110 90909'},
+  ],
+  attendanceDays:['Mon 14','Tue 15','Wed 16','Thu 17','Fri 18','Sat 19','Sun 20'],
+  attendance:{
+    'Ramu Yadav':      ['P','P','P','A','P','P','H'],
+    'Sunita Devi':     ['P','P','P','P','P','A','H'],
+    'Iqbal Sheikh':    ['P','P','P','P','P','P','H'],
+    'Meena Kumari':    ['A','P','P','P','H','P','H'],
+    'Dinesh Chauhan':  ['P','H','P','P','P','P','H'],
+  }
+};
+
+function inr(n){ return '₹' + Number(n).toLocaleString('en-IN'); }
+function fmtDate(d){
+  const dt = new Date(d);
+  return dt.toLocaleDateString('en-IN', {day:'2-digit', month:'short', year:'numeric'});
+}
+
+/* ================= NAV CONFIG ================= */
+const NAV = {
+  home: [
+    {group:'Overview', items:[
+      {id:'home-dashboard', icon:'📊', label:'Dashboard'},
+    ]},
+    {group:'Money', items:[
+      {id:'home-accounts', icon:'🏦', label:'Bank Accounts'},
+      {id:'home-cards', icon:'💳', label:'Credit Cards'},
+      {id:'home-emis', icon:'📆', label:'EMIs'},
+      {id:'home-bills', icon:'🧾', label:'Bills'},
+    ]},
+    {group:'Daily', items:[
+      {id:'home-expenses', icon:'✏️', label:'Daily Expenses'},
+    ]},
+  ],
+  factory: [
+    {group:'Overview', items:[
+      {id:'factory-dashboard', icon:'📊', label:'Dashboard'},
+    ]},
+    {group:'Directory', items:[
+      {id:'factory-customers', icon:'👥', label:'Customers'},
+      {id:'factory-suppliers', icon:'🚚', label:'Suppliers'},
+    ]},
+    {group:'Inventory', items:[
+      {id:'factory-products', icon:'📦', label:'Products'},
+      {id:'factory-materials', icon:'🧱', label:'Materials'},
+    ]},
+    {group:'Transactions', items:[
+      {id:'factory-sales', icon:'💰', label:'Sales'},
+      {id:'factory-purchases', icon:'🛒', label:'Purchases'},
+    ]},
+    {group:'Workforce', items:[
+      {id:'factory-workers', icon:'🧑‍🏭', label:'Workers'},
+      {id:'factory-attendance', icon:'✅', label:'Attendance'},
+    ]},
+  ]
+};
+
+const PAGE_META = {
+  'home-dashboard':{title:'Home Dashboard', crumb:'Home / Expenses · Dashboard'},
+  'home-accounts':{title:'Bank Accounts', crumb:'Home / Expenses · Bank Accounts', addLabel:'+ Add Account'},
+  'home-cards':{title:'Credit Cards', crumb:'Home / Expenses · Credit Cards', addLabel:'+ Add Card'},
+  'home-emis':{title:'EMIs', crumb:'Home / Expenses · EMIs', addLabel:'+ Add EMI'},
+  'home-bills':{title:'Bills', crumb:'Home / Expenses · Bills', addLabel:'+ Add Bill'},
+  'home-expenses':{title:'Daily Expenses', crumb:'Home / Expenses · Daily Expenses'},
+  'factory-dashboard':{title:'Factory Dashboard', crumb:'Factory · Dashboard'},
+  'factory-customers':{title:'Customers', crumb:'Factory · Customers', addLabel:'+ Add Customer'},
+  'factory-suppliers':{title:'Suppliers', crumb:'Factory · Suppliers', addLabel:'+ Add Supplier'},
+  'factory-products':{title:'Products', crumb:'Factory · Products', addLabel:'+ Add Product'},
+  'factory-materials':{title:'Materials', crumb:'Factory · Materials', addLabel:'+ Add Material'},
+  'factory-sales':{title:'Sales', crumb:'Factory · Sales', addLabel:'+ New Sale'},
+  'factory-purchases':{title:'Purchases', crumb:'Factory · Purchases', addLabel:'+ New Purchase'},
+  'factory-workers':{title:'Workers', crumb:'Factory · Workforce · Workers', addLabel:'+ Add Worker'},
+  'factory-attendance':{title:'Attendance', crumb:'Factory · Workforce · Attendance'},
+};
+
+let mode = 'home';
+let currentPage = 'home-dashboard';
+
+/* ================= RENDER NAV ================= */
+function renderNav(){
+  const nav = document.getElementById('nav');
+  nav.innerHTML = NAV[mode].map(g => `
+    <div class="group-label">${g.group}</div>
+    ${g.items.map(it => `<a data-page="${it.id}" class="${it.id===currentPage?'active':''}" onclick="goPage('${it.id}')">
+        <span class="ic">${it.icon}</span><span>${it.label}</span>
+      </a>`).join('')}
+  `).join('');
+}
+
+function setMode(m){
+  mode = m;
+  document.body.classList.toggle('factory-mode', m==='factory');
+  document.getElementById('btn-home-mode').classList.toggle('active', m==='home');
+  document.getElementById('btn-factory-mode').classList.toggle('active', m==='factory');
+  currentPage = m === 'home' ? 'home-dashboard' : 'factory-dashboard';
+  renderNav();
+  renderPage(currentPage);
+}
+
+function goPage(id){
+  currentPage = id;
+  renderNav();
+  renderPage(id);
+}
+
+/* ================= PAGE BUILDERS ================= */
+function kpiCard(lbl, val, delta, deltaClass){
+  return `<div class="kpi"><div class="lbl">${lbl}</div><div class="val">${val}</div>
+    ${delta ? `<div class="delta ${deltaClass}">${delta}</div>` : ''}</div>`;
+}
+
+function table(columns, rows){
+  return `<table><thead><tr>${columns.map(c=>`<th${c.num?' class="num"':''}>${c.label}</th>`).join('')}</tr></thead>
+    <tbody>${rows}</tbody></table>`;
+}
+
+function renderPage(id){
+  const meta = PAGE_META[id];
+  document.getElementById('page-title').textContent = meta.title;
+  document.getElementById('page-crumb').textContent = meta.crumb;
+  const addBtn = document.getElementById('topbar-primary-btn');
+  const expBtn = document.getElementById('topbar-secondary-btn');
+  if(meta.addLabel){
+    addBtn.style.display='inline-flex'; addBtn.textContent = meta.addLabel;
+    addBtn.onclick = ()=>openModal(meta.addLabel.replace('+ ',''));
+    expBtn.style.display='inline-flex';
+  } else {
+    addBtn.style.display='none'; expBtn.style.display='none';
+  }
+
+  const c = document.getElementById('content');
+  c.innerHTML = BUILDERS[id]();
+}
+
+const BUILDERS = {
+  'home-dashboard': ()=>{
+    const totalBal = D.accounts.reduce((s,a)=>s+a.balance,0);
+    const monthExp = D.expenses.reduce((s,e)=>s+e.amount,0)*6;
+    const cardDue = D.cards.reduce((s,c)=>s+ (c.status!=='Paid'?c.total:0),0);
+    const emiMonthly = D.emis.reduce((s,e)=>s+e.monthly,0);
+    return `
+    <div class="kpi-row">
+      ${kpiCard('Total Balance', inr(totalBal), '+2.1% vs last month', 'up')}
+      ${kpiCard('This Month Expenses', inr(monthExp), '↑ 8% vs avg', 'down')}
+      ${kpiCard('Credit Card Due', inr(cardDue), '2 cards pending', 'flat')}
+      ${kpiCard('Monthly EMI Outgo', inr(emiMonthly), '3 active EMIs', 'flat')}
+    </div>
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-head"><h3>Recent Daily Expenses</h3><a onclick="goPage('home-expenses')" style="font-size:12px;color:var(--accent);cursor:pointer">View all →</a></div>
+        <div class="panel-body">
+          ${table(
+            [{label:'Date'},{label:'Category'},{label:'Note'},{label:'Method'},{label:'Amount',num:true}],
+            D.expenses.slice(0,5).map(e=>`<tr><td>${fmtDate(e.date)}</td><td>${e.category}</td><td>${e.note}</td><td>${e.method}</td><td class="num">${inr(e.amount)}</td></tr>`).join('')
+          )}
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>Upcoming Dues</h3></div>
+        <div class="panel-body" style="display:flex; flex-direction:column; gap:12px">
+          ${D.cards.filter(c=>c.status!=='Paid').map(c=>`
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div><div style="font-weight:600;font-size:13px">${c.name}</div><div style="font-size:11.5px;color:var(--text-faint)">Due ${fmtDate(c.due)}</div></div>
+              <div style="font-weight:700">${inr(c.total)}</div>
+            </div>`).join('')}
+          ${D.bills.filter(b=>b.status!=='Paid').slice(0,2).map(b=>`
+            <div style="display:flex;justify-content:space-between;align-items:center">
+              <div><div style="font-weight:600;font-size:13px">${b.name}</div><div style="font-size:11.5px;color:var(--text-faint)">Due ${fmtDate(b.due)}</div></div>
+              <div style="font-weight:700">${inr(b.amount)}</div>
+            </div>`).join('')}
+        </div>
+      </div>
+    </div>`;
+  },
+
+  'home-accounts': ()=>`
+    <div class="kpi-row">
+      ${kpiCard('Total Balance', inr(D.accounts.reduce((s,a)=>s+a.balance,0)))}
+      ${kpiCard('Accounts', D.accounts.length)}
+      ${kpiCard('Lowest Balance', D.accounts.reduce((m,a)=>a.balance<m.balance?a:m).name)}
+    </div>
+    <div class="panel"><div class="panel-body">
+      ${table(
+        [{label:'Account'},{label:'Number'},{label:'Type'},{label:'Status'},{label:'Balance',num:true}],
+        D.accounts.map(a=>`<tr>
+          <td><span class="avatar-sm">${a.name[0]}</span>${a.name}</td>
+          <td>${a.number}</td><td>${a.type}</td>
+          <td><span class="tag ${a.tag}">${a.tag==='good'?'Healthy':a.tag==='warn'?'Low':'Cash'}</span></td>
+          <td class="num">${inr(a.balance)}</td></tr>`).join('')
+      )}
+    </div></div>`,
+
+  'home-cards': ()=>`
+    <div class="panel"><div class="panel-body">
+      ${table(
+        [{label:'Card'},{label:'Statement Due'},{label:'Total Due',num:true},{label:'Min Due',num:true},{label:'Status'}],
+        D.cards.map(c=>`<tr><td>${c.name}</td><td>${fmtDate(c.due)}</td><td class="num">${inr(c.total)}</td><td class="num">${inr(c.min)}</td>
+          <td><span class="tag ${c.tagClass}">${c.status}</span></td></tr>`).join('')
+      )}
+    </div></div>`,
+
+  'home-emis': ()=>`
+    <div class="panel"><div class="panel-body">
+      ${table(
+        [{label:'Loan / EMI'},{label:'Principal',num:true},{label:'Monthly',num:true},{label:'Months Left',num:true},{label:'Next Due'}],
+        D.emis.map(e=>`<tr><td>${e.name}</td><td class="num">${inr(e.principal)}</td><td class="num">${inr(e.monthly)}</td>
+          <td class="num">${e.remaining}</td><td>${fmtDate(e.next)}</td></tr>`).join('')
+      )}
+    </div></div>`,
+
+  'home-bills': ()=>`
+    <div class="panel"><div class="panel-body">
+      ${table(
+        [{label:'Bill'},{label:'Category'},{label:'Due Date'},{label:'Amount',num:true},{label:'Status'}],
+        D.bills.map(b=>`<tr><td>${b.name}</td><td>${b.category}</td><td>${fmtDate(b.due)}</td>
+          <td class="num">${inr(b.amount)}</td><td><span class="tag ${b.tagClass}">${b.status}</span></td></tr>`).join('')
+      )}
+    </div></div>`,
+
+  'home-expenses': ()=>`
+    <div class="panel">
+      <div class="panel-head"><h3>Quick Add Expense</h3></div>
+      <div class="panel-body">
+        <div class="quick-form">
+          <div class="field"><label>Date</label><input type="date" value="2026-07-20"></div>
+          <div class="field"><label>Amount</label><input type="number" placeholder="₹ 0"></div>
+          <div class="field"><label>Category</label>
+            <select><option>Groceries</option><option>Fuel</option><option>Dining</option><option>Utilities</option><option>Medical</option><option>Other</option></select>
+          </div>
+          <div class="field"><label>Payment Method</label>
+            <select><option>UPI</option><option>Cash</option><option>Credit Card</option><option>Debit Card</option></select>
+          </div>
+          <div class="field wide"><label>Note</label><input type="text" placeholder="What was this for?"></div>
+          <div class="field"><label>&nbsp;</label><button class="btn btn-primary" onclick="addExpenseDemo()">+ Add</button></div>
+        </div>
+      </div>
+    </div>
+    <div class="panel">
+      <div class="panel-head"><h3>All Expenses</h3></div>
+      <div class="panel-body">
+        <div class="toolbar">
+          <input class="search" placeholder="Search notes...">
+          <div class="chip-row">
+            <div class="chip active">All</div><div class="chip">Groceries</div><div class="chip">Dining</div><div class="chip">Utilities</div>
+          </div>
+        </div>
+        <table id="expense-table">
+          <thead><tr><th>Date</th><th>Category</th><th>Note</th><th>Method</th><th class="num">Amount</th></tr></thead>
+          <tbody id="expense-tbody">
+          ${D.expenses.map(e=>`<tr><td>${fmtDate(e.date)}</td><td>${e.category}</td><td>${e.note}</td><td>${e.method}</td><td class="num">${inr(e.amount)}</td></tr>`).join('')}
+          </tbody>
+        </table>
+      </div>
+    </div>`,
+
+  'factory-dashboard': ()=>{
+    const stockVal = D.products.reduce((s,p)=>s+p.stock*p.price,0);
+    const todaySales = D.sales.filter(s=>s.date==='2026-07-19').reduce((s,x)=>s+x.amount,0);
+    const presentToday = Object.values(D.attendance).filter(a=>a[5]==='P').length;
+    return `
+    <div class="kpi-row">
+      ${kpiCard('Stock Value', inr(stockVal), '4 products tracked', 'flat')}
+      ${kpiCard("Today's Sales", inr(todaySales||44000), '4 orders', 'up')}
+      ${kpiCard('Pending Receivables', inr(D.customers.reduce((s,c)=>s+c.outstanding,0)), '2 customers', 'down')}
+      ${kpiCard('Workers Present Today', presentToday + ' / ' + D.workers.length, '1 on half-day', 'flat')}
+    </div>
+    <div class="two-col">
+      <div class="panel">
+        <div class="panel-head"><h3>Recent Sales</h3><a onclick="goPage('factory-sales')" style="font-size:12px;color:var(--factory-accent);cursor:pointer">View all →</a></div>
+        <div class="panel-body">
+          ${table([{label:'Date'},{label:'Customer'},{label:'Product'},{label:'Amount',num:true}],
+            D.sales.slice(0,4).map(s=>`<tr><td>${fmtDate(s.date)}</td><td>${s.customer}</td><td>${s.product}</td><td class="num">${inr(s.amount)}</td></tr>`).join(''))}
+        </div>
+      </div>
+      <div class="panel">
+        <div class="panel-head"><h3>Low Stock Alerts</h3></div>
+        <div class="panel-body" style="display:flex;flex-direction:column;gap:12px">
+          ${[...D.materials.filter(m=>m.low), ...D.products.filter(p=>p.low)].map(x=>`
+            <div>
+              <div style="display:flex;justify-content:space-between;font-size:13px;font-weight:600"><span>${x.name}</span><span class="tag bad">Low</span></div>
+              <div class="progress" style="margin-top:6px"><div style="width:${Math.min(100,(x.stock/(x.reorder||x.stock||1))*40)}%"></div></div>
+            </div>`).join('') || '<div class="empty-hint">All stock levels healthy</div>'}
+        </div>
+      </div>
+    </div>`;
+  },
+
+  'factory-customers': ()=>`
+    <div class="panel"><div class="panel-body">
+      <div class="toolbar"><input class="search" placeholder="Search customers..."></div>
+      ${table(
+        [{label:'Customer'},{label:'Contact'},{label:'Orders',num:true},{label:'Outstanding',num:true},{label:'Status'}],
+        D.customers.map(c=>`<tr><td><span class="avatar-sm">${c.name[0]}</span>${c.name}</td><td>${c.contact}</td>
+          <td class="num">${c.orders}</td><td class="num">${inr(c.outstanding)}</td>
+          <td><span class="tag ${c.tagClass}">${c.outstanding>0?'Owes':'Settled'}</span></td></tr>`).join('')
+      )}
+    </div></div>`,
+
+  'factory-suppliers': ()=>`
+    <div class="panel"><div class="panel-body">
+      <div class="toolbar"><input class="search" placeholder="Search suppliers..."></div>
+      ${table(
+        [{label:'Supplier'},{label:'Contact'},{label:'Supplies'},{label:'Payable',num:true},{label:'Status'}],
+        D.suppliers.map(s=>`<tr><td><span class="avatar-sm">${s.name[0]}</span>${s.name}</td><td>${s.contact}</td><td>${s.supplies}</td>
+          <td class="num">${inr(s.payable)}</td><td><span class="tag ${s.tagClass}">${s.payable>0?'Payable':'Settled'}</span></td></tr>`).join('')
+      )}
+    </div></div>`,
+
+  'factory-products': ()=>`
+    <div class="panel"><div class="panel-body">
+      <div class="toolbar"><input class="search" placeholder="Search products..."></div>
+      ${table(
+        [{label:'Product'},{label:'Category'},{label:'Unit Price',num:true},{label:'Stock',num:true},{label:'Status'}],
+        D.products.map(p=>`<tr><td>${p.name}</td><td>${p.category}</td><td class="num">${inr(p.price)}</td>
+          <td class="num">${p.stock} ${p.unit}</td><td>${p.low?'<span class="tag bad">Low Stock</span>':'<span class="tag good">In Stock</span>'}</td></tr>`).join('')
+      )}
+    </div></div>`,
+
+  'factory-materials': ()=>`
+    <div class="panel"><div class="panel-body">
+      <div class="toolbar"><input class="search" placeholder="Search materials..."></div>
+      ${table(
+        [{label:'Material'},{label:'Stock',num:true},{label:'Reorder Level',num:true},{label:'Supplier'},{label:'Status'}],
+        D.materials.map(m=>`<tr><td>${m.name}</td><td class="num">${m.stock} ${m.unit}</td><td class="num">${m.reorder} ${m.unit}</td>
+          <td>${m.supplier}</td><td>${m.low?'<span class="tag bad">Reorder</span>':'<span class="tag good">OK</span>'}</td></tr>`).join('')
+      )}
+    </div></div>`,
+
+  'factory-sales': ()=>`
+    <div class="kpi-row">
+      ${kpiCard('Total Sales (shown)', inr(D.sales.reduce((s,x)=>s+x.amount,0)))}
+      ${kpiCard('Orders', D.sales.length)}
+    </div>
+    <div class="panel"><div class="panel-body">
+      ${table(
+        [{label:'Date'},{label:'Customer'},{label:'Product'},{label:'Qty',num:true},{label:'Amount',num:true}],
+        D.sales.map(s=>`<tr><td>${fmtDate(s.date)}</td><td>${s.customer}</td><td>${s.product}</td><td class="num">${s.qty}</td><td class="num">${inr(s.amount)}</td></tr>`).join('')
+      )}
+    </div></div>`,
+
+  'factory-purchases': ()=>`
+    <div class="kpi-row">
+      ${kpiCard('Total Purchases (shown)', inr(D.purchases.reduce((s,x)=>s+x.amount,0)))}
+      ${kpiCard('Orders', D.purchases.length)}
+    </div>
+    <div class="panel"><div class="panel-body">
+      ${table(
+        [{label:'Date'},{label:'Supplier'},{label:'Material'},{label:'Qty',num:true},{label:'Amount',num:true}],
+        D.purchases.map(p=>`<tr><td>${fmtDate(p.date)}</td><td>${p.supplier}</td><td>${p.material}</td><td class="num">${p.qty}</td><td class="num">${inr(p.amount)}</td></tr>`).join('')
+      )}
+    </div></div>`,
+
+  'factory-workers': ()=>`
+    <div class="panel"><div class="panel-body">
+      <div class="toolbar"><input class="search" placeholder="Search workers..."></div>
+      ${table(
+        [{label:'Name'},{label:'Role'},{label:'Joined'},{label:'Daily Wage',num:true},{label:'Phone'}],
+        D.workers.map(w=>`<tr><td><span class="avatar-sm">${w.name[0]}</span>${w.name}</td><td>${w.role}</td>
+          <td>${fmtDate(w.joined)}</td><td class="num">${inr(w.wage)}</td><td>${w.phone}</td></tr>`).join('')
+      )}
+    </div></div>`,
+
+  'factory-attendance': ()=>`
+    <div class="panel">
+      <div class="panel-head"><h3>This Week — 14 to 20 Jul 2026</h3>
+        <div class="chip-row"><span class="chip">P Present</span><span class="chip">A Absent</span><span class="chip">H Half-day</span></div>
+      </div>
+      <div class="panel-body">
+        <div class="att-grid">
+          <div class="h" style="text-align:left">Worker</div>
+          ${D.attendanceDays.map(d=>`<div class="h">${d}</div>`).join('')}
+          ${D.workers.map(w=>`
+            <div class="att-name">${w.name}</div>
+            ${D.attendance[w.name].map(s=>`<div class="att-cell"><div class="dot ${s}">${s}</div></div>`).join('')}
+          `).join('')}
+        </div>
+      </div>
+    </div>`,
+};
+
+/* ================= INTERACTIONS ================= */
+function addExpenseDemo(){
+  const tbody = document.getElementById('expense-tbody');
+  const row = document.createElement('tr');
+  row.innerHTML = `<td>${fmtDate('2026-07-20')}</td><td>Other</td><td>New quick-added expense (demo)</td><td>UPI</td><td class="num">${inr(250)}</td>`;
+  tbody.prepend(row);
+}
+
+function openModal(title){
+  document.getElementById('modal-title').textContent = title;
+  document.getElementById('modal-body').innerHTML = `
+    <div class="field"><label>Name / Title</label><input type="text" placeholder="Enter details"></div>
+    <div class="field"><label>Amount / Value</label><input type="number" placeholder="₹ 0"></div>
+    <div class="field"><label>Date</label><input type="date" value="2026-07-20"></div>
+    <div style="font-size:11.5px;color:var(--text-faint)">This is a static mockup — form fields are for layout preview only.</div>
+  `;
+  document.getElementById('modal-backdrop').classList.add('show');
+}
+function closeModal(){ document.getElementById('modal-backdrop').classList.remove('show'); }
+
+function toggleTheme(){
+  const root = document.documentElement;
+  const cur = root.getAttribute('data-theme');
+  if(cur === 'dark'){ root.setAttribute('data-theme','light'); }
+  else if(cur === 'light'){ root.setAttribute('data-theme','dark'); }
+  else {
+    const prefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+    root.setAttribute('data-theme', prefersDark ? 'light' : 'dark');
+  }
+}
+
+/* init */
+renderNav();
+renderPage(currentPage);
+</script>
+</body>
+</html>
