@@ -1,0 +1,79 @@
+<div class="kpi-row">
+  <div class="kpi">
+    <div class="lbl">Materials</div>
+    <div class="val">{{ materials.length }}</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Low Stock Alerts</div>
+    <div class="val">{{ lowStockCount }}</div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <h3>Materials</h3>
+    <button class="btn btn-primary" (click)="openAdd()">+ Add Material</button>
+  </div>
+  <div class="panel-body">
+    @if (loading) {
+      <div class="empty-hint">Loading materials...</div>
+    } @else if (error) {
+      <div class="empty-hint">{{ error }}</div>
+    } @else if (materials.length === 0) {
+      <div class="empty-hint">No materials yet. Click "+ Add Material" to create your first one.</div>
+    } @else {
+      <table>
+        <thead><tr><th>Material</th><th class="num">Stock</th><th class="num">Reorder Level</th><th>Supplier</th><th>Status</th><th></th></tr></thead>
+        <tbody>
+          @for (m of materials; track m.id) {
+            <tr>
+              <td>{{ m.name }}</td>
+              <td class="num">{{ m.stockQty }} {{ m.unit }}</td>
+              <td class="num">{{ m.reorderLevel }} {{ m.unit }}</td>
+              <td>{{ m.supplierName || '—' }}</td>
+              <td><span class="tag" [ngClass]="isLow(m) ? 'bad' : 'good'">{{ isLow(m) ? 'Reorder' : 'OK' }}</span></td>
+              <td class="num">
+                <button class="btn btn-ghost" (click)="openEdit(m)">Edit</button>
+                <button class="btn btn-danger" (click)="remove(m)">Delete</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>
+
+<div class="modal-backdrop" [class.show]="showModal">
+  <div class="modal">
+    <h3>{{ editingId === null ? 'Add Material' : 'Edit Material' }}</h3>
+    <div class="field">
+      <label>Name</label>
+      <input type="text" [(ngModel)]="form.name" placeholder="e.g. HDPE Granules">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Unit</label>
+        <input type="text" [(ngModel)]="form.unit" placeholder="kg, ltr, roll, etc.">
+      </div>
+      <div class="field">
+        <label>Supplier</label>
+        <input type="text" [(ngModel)]="form.supplierName" placeholder="Optional">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Stock Quantity</label>
+        <input type="number" [(ngModel)]="form.stockQty">
+      </div>
+      <div class="field">
+        <label>Reorder Level</label>
+        <input type="number" [(ngModel)]="form.reorderLevel">
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" (click)="closeModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="save()">Save</button>
+    </div>
+  </div>
+</div>

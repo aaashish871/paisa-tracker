@@ -1,0 +1,66 @@
+<div class="kpi-row">
+  <div class="kpi">
+    <div class="lbl">Stock Value</div>
+    <div class="val">{{ stockValue | currency:'INR':'symbol':'1.0-0' }}</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Today's Sales</div>
+    <div class="val">{{ todaysSales | currency:'INR':'symbol':'1.0-0' }}</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Pending Payables</div>
+    <div class="val">{{ pendingPayables | currency:'INR':'symbol':'1.0-0' }}</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Workers Present Today</div>
+    <div class="val">{{ workersPresentToday }} / {{ totalWorkers }}</div>
+  </div>
+</div>
+
+<div class="two-col-grid">
+  <div class="panel">
+    <div class="panel-head">
+      <h3>Recent Sales</h3>
+      <a routerLink="/factory/sales" class="btn btn-ghost">View all →</a>
+    </div>
+    <div class="panel-body">
+      @if (loading) {
+        <div class="empty-hint">Loading...</div>
+      } @else if (recentSales.length === 0) {
+        <div class="empty-hint">No sales yet. <a routerLink="/factory/sales">Record one</a>.</div>
+      } @else {
+        <table>
+          <thead><tr><th>Date</th><th>Customer</th><th>Product</th><th class="num">Amount</th></tr></thead>
+          <tbody>
+            @for (s of recentSales; track s.id) {
+              <tr><td>{{ s.date | date:'dd MMM yyyy' }}</td><td>{{ s.customerName }}</td><td>{{ s.productName }}</td><td class="num">{{ s.amount | currency:'INR':'symbol':'1.0-0' }}</td></tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h3>Low Stock Alerts</h3>
+      <a routerLink="/factory/materials" class="btn btn-ghost">Manage →</a>
+    </div>
+    <div class="panel-body">
+      @if (loading) {
+        <div class="empty-hint">Loading...</div>
+      } @else if (lowStockMaterials.length === 0) {
+        <div class="empty-hint">All material stock levels are healthy.</div>
+      } @else {
+        <table>
+          <thead><tr><th>Material</th><th class="num">Stock</th><th class="num">Reorder Level</th></tr></thead>
+          <tbody>
+            @for (m of lowStockMaterials; track m.id) {
+              <tr><td>{{ m.name }}</td><td class="num">{{ m.stockQty }} {{ m.unit }}</td><td class="num">{{ m.reorderLevel }} {{ m.unit }}</td></tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+  </div>
+</div>

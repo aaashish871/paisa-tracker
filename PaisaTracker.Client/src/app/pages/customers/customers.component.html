@@ -1,0 +1,54 @@
+<div class="panel">
+  <div class="panel-head">
+    <h3>Customers</h3>
+    <button class="btn btn-primary" (click)="openAdd()">+ Add Customer</button>
+  </div>
+  <div class="panel-body">
+    @if (loading) {
+      <div class="empty-hint">Loading customers...</div>
+    } @else if (error) {
+      <div class="empty-hint">{{ error }}</div>
+    } @else if (customers.length === 0) {
+      <div class="empty-hint">No customers yet. Click "+ Add Customer" to create your first one.</div>
+    } @else {
+      <table>
+        <thead><tr><th>Name</th><th>Contact</th><th>Notes</th><th></th></tr></thead>
+        <tbody>
+          @for (c of customers; track c.id) {
+            <tr>
+              <td><span class="avatar-sm">{{ c.name.charAt(0) }}</span>{{ c.name }}</td>
+              <td>{{ c.contactPhone || '—' }}</td>
+              <td>{{ c.notes || '—' }}</td>
+              <td class="num">
+                <button class="btn btn-ghost" (click)="openEdit(c)">Edit</button>
+                <button class="btn btn-danger" (click)="remove(c)">Delete</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>
+
+<div class="modal-backdrop" [class.show]="showModal">
+  <div class="modal">
+    <h3>{{ editingId === null ? 'Add Customer' : 'Edit Customer' }}</h3>
+    <div class="field">
+      <label>Name</label>
+      <input type="text" [(ngModel)]="form.name" placeholder="e.g. Ganesh Traders">
+    </div>
+    <div class="field">
+      <label>Contact Phone</label>
+      <input type="text" [(ngModel)]="form.contactPhone" placeholder="Optional">
+    </div>
+    <div class="field">
+      <label>Notes</label>
+      <input type="text" [(ngModel)]="form.notes" placeholder="Optional">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" (click)="closeModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="save()">Save</button>
+    </div>
+  </div>
+</div>

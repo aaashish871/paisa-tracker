@@ -94,3 +94,58 @@ export interface Expense {
   note?: string;
   amount: number;
 }
+
+export interface Emi {
+  id: number;
+  name: string;
+  principal: number;
+  monthlyAmount: number;
+  tenureMonths: number;
+  remainingMonths: number;
+  nextDueDate: string;
+  notes?: string;
+}
+
+export type BillStatus = 'Upcoming' | 'DueSoon' | 'Unpaid' | 'Paid';
+
+export interface Bill {
+  id: number;
+  name: string;
+  category: string;
+  dueDate: string;
+  amount: number;
+  status: BillStatus;
+  notes?: string;
+}
+
+export interface Customer {
+  id: number;
+  name: string;
+  contactPhone?: string;
+  notes?: string;
+}
+
+export interface Supplier {
+  id: number;
+  name: string;
+  contactPhone?: string;
+  notes?: string;
+}
+
+export interface Product {
+  id: number;
+  name: string;
+  category?: string;
+  unit: string;
+  unitPrice: number;
+  stockQty: number;
+}
+
+export interface Material {
+  id: number;
+  name: string;
+  unit: string;
+  stockQty: number;
+  reorderLevel: number;
+  supplierName?: string;
+}

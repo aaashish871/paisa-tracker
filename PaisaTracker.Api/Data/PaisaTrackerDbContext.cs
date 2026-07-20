@@ -22,6 +22,12 @@ public class PaisaTrackerDbContext : IdentityDbContext<ApplicationUser>
     public DbSet<Sale> Sales => Set<Sale>();
     public DbSet<Purchase> Purchases => Set<Purchase>();
     public DbSet<Expense> Expenses => Set<Expense>();
+    public DbSet<Emi> Emis => Set<Emi>();
+    public DbSet<Bill> Bills => Set<Bill>();
+    public DbSet<Customer> Customers => Set<Customer>();
+    public DbSet<Supplier> Suppliers => Set<Supplier>();
+    public DbSet<Product> Products => Set<Product>();
+    public DbSet<Material> Materials => Set<Material>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -86,6 +92,42 @@ public class PaisaTrackerDbContext : IdentityDbContext<ApplicationUser>
             .HasOne<ApplicationUser>()
             .WithMany()
             .HasForeignKey(e => e.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Emi>()
+            .HasOne<ApplicationUser>()
+            .WithMany()
+            .HasForeignKey(e => e.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Bill>()
+            .HasOne<ApplicationUser>()
+            .WithMany()
+            .HasForeignKey(b => b.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Customer>()
+            .HasOne<ApplicationUser>()
+            .WithMany()
+            .HasForeignKey(c => c.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Supplier>()
+            .HasOne<ApplicationUser>()
+            .WithMany()
+            .HasForeignKey(s => s.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Product>()
+            .HasOne<ApplicationUser>()
+            .WithMany()
+            .HasForeignKey(p => p.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<Material>()
+            .HasOne<ApplicationUser>()
+            .WithMany()
+            .HasForeignKey(m => m.UserId)
             .OnDelete(DeleteBehavior.Cascade);
     }
 }

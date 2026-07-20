@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Account, CreditCard, Expense } from './models';
+import { Account, CreditCard, Expense, Emi, Bill } from './models';
 import { environment } from '../../environments/environment';
 
 const BASE_URL = environment.apiUrl;
@@ -44,5 +44,31 @@ export class ApiService {
   }
   deleteExpense(id: number): Observable<void> {
     return this.http.delete<void>(`${BASE_URL}/expenses/${id}`);
+  }
+
+  getEmis(): Observable<Emi[]> {
+    return this.http.get<Emi[]>(`${BASE_URL}/emis`);
+  }
+  createEmi(payload: Omit<Emi, 'id'>): Observable<Emi> {
+    return this.http.post<Emi>(`${BASE_URL}/emis`, payload);
+  }
+  updateEmi(id: number, payload: Omit<Emi, 'id'>): Observable<void> {
+    return this.http.put<void>(`${BASE_URL}/emis/${id}`, payload);
+  }
+  deleteEmi(id: number): Observable<void> {
+    return this.http.delete<void>(`${BASE_URL}/emis/${id}`);
+  }
+
+  getBills(): Observable<Bill[]> {
+    return this.http.get<Bill[]>(`${BASE_URL}/bills`);
+  }
+  createBill(payload: Omit<Bill, 'id'>): Observable<Bill> {
+    return this.http.post<Bill>(`${BASE_URL}/bills`, payload);
+  }
+  updateBill(id: number, payload: Omit<Bill, 'id'>): Observable<void> {
+    return this.http.put<void>(`${BASE_URL}/bills/${id}`, payload);
+  }
+  deleteBill(id: number): Observable<void> {
+    return this.http.delete<void>(`${BASE_URL}/bills/${id}`);
   }
 }
