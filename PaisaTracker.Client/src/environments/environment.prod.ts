@@ -1,4 +1,4 @@
 export const environment = {
   production: true,
-  apiUrl: 'https://REPLACE-WITH-RENDER-URL.onrender.com/api'
+  apiUrl: 'https://paisa-tracker-api.onrender.com/api'
 };

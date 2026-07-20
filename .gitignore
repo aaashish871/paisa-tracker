@@ -15,3 +15,4 @@ PaisaTracker.Client/.angular/
 .vscode/
 Thumbs.db
 .DS_Store
+PaisaTracker.Client/.netlify/

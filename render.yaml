@@ -5,7 +5,7 @@ services:
     rootDir: PaisaTracker.Api
     dockerfilePath: ./Dockerfile
     plan: free
-    healthCheckPath: /api/auth/me
+    healthCheckPath: /health
     envVars:
       - key: ConnectionStrings__DefaultConnection
         sync: false
