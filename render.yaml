@@ -1,0 +1,25 @@
+services:
+  - type: web
+    name: paisa-tracker-api
+    runtime: docker
+    rootDir: PaisaTracker.Api
+    dockerfilePath: ./Dockerfile
+    plan: free
+    healthCheckPath: /api/auth/me
+    envVars:
+      - key: ConnectionStrings__DefaultConnection
+        sync: false
+      - key: Jwt__Key
+        sync: false
+      - key: Jwt__Issuer
+        value: PaisaTracker
+      - key: Jwt__Audience
+        value: PaisaTracker.Client
+      - key: Jwt__ExpiryMinutes
+        value: "720"
+      - key: SeedAdmin__Username
+        value: admin
+      - key: SeedAdmin__Password
+        sync: false
+      - key: ALLOWED_ORIGINS
+        sync: false
