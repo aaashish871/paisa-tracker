@@ -3,12 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../core/api.service';
 import { Emi } from '../../core/models';
+import { todayIso } from '../../core/date-utils';
 
 type EmiForm = Omit<Emi, 'id'>;
-
-function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
-}
 
 const EMPTY_FORM: EmiForm = {
   name: '', principal: 0, monthlyAmount: 0, tenureMonths: 12, remainingMonths: 12, nextDueDate: todayIso(), notes: ''

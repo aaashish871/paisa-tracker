@@ -3,12 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { WorkforceService } from '../../core/workforce.service';
 import { Worker } from '../../core/models';
+import { todayIso } from '../../core/date-utils';
 
 type WorkerForm = Omit<Worker, 'id'>;
-
-function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
-}
 
 const EMPTY_FORM: WorkerForm = {
   name: '', role: '', phone: '', monthlySalary: 0, joinedDate: todayIso(), active: true

@@ -3,12 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { FactoryTransactionsService } from '../../core/factory-transactions.service';
 import { Sale } from '../../core/models';
+import { todayIso } from '../../core/date-utils';
 
 type SaleForm = Omit<Sale, 'id'>;
-
-function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
-}
 
 const EMPTY_FORM: SaleForm = {
   date: todayIso(), customerName: '', productName: '', quantity: 1, amount: 0, notes: ''

@@ -6,10 +6,7 @@ import { FactoryTransactionsService } from '../../core/factory-transactions.serv
 import { MasterDataService } from '../../core/master-data.service';
 import { WorkforceService } from '../../core/workforce.service';
 import { Sale, Purchase, Product, Material, PayrollRow } from '../../core/models';
-
-function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
-}
+import { todayIso } from '../../core/date-utils';
 
 @Component({
   selector: 'app-factory-dashboard',

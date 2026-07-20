@@ -3,16 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../core/api.service';
 import { Expense } from '../../core/models';
-
-function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
-}
-
-function addDays(iso: string, days: number): string {
-  const d = new Date(iso + 'T00:00:00');
-  d.setDate(d.getDate() + days);
-  return d.toISOString().slice(0, 10);
-}
+import { todayIso, addDays } from '../../core/date-utils';
 
 const PAYMENT_METHODS = ['UPI', 'Cash', 'Credit Card', 'Debit Card', 'Net Banking'];
 

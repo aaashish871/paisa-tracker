@@ -3,12 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../core/api.service';
 import { Bill, BillStatus } from '../../core/models';
+import { todayIso } from '../../core/date-utils';
 
 type BillForm = Omit<Bill, 'id'>;
-
-function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
-}
 
 const EMPTY_FORM: BillForm = {
   name: '', category: '', dueDate: todayIso(), amount: 0, status: 'Upcoming', notes: ''

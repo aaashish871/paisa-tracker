@@ -3,10 +3,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { WorkforceService } from '../../core/workforce.service';
 import { Worker, AttendanceStatus, Advance, PayrollRow } from '../../core/models';
-
-function toIso(d: Date): string {
-  return d.toISOString().slice(0, 10);
-}
+import { toIsoDate as toIso } from '../../core/date-utils';
 
 function startOfWeek(d: Date): Date {
   const copy = new Date(d);

@@ -3,12 +3,9 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ApiService } from '../../core/api.service';
 import { CreditCard, CreditCardStatus } from '../../core/models';
+import { todayIso } from '../../core/date-utils';
 
 type CardForm = Omit<CreditCard, 'id'>;
-
-function todayIso(): string {
-  return new Date().toISOString().slice(0, 10);
-}
 
 const EMPTY_FORM: CardForm = {
   name: '', bankName: '', cardNumberLast4: '', creditLimit: 0, currentOutstanding: 0,
