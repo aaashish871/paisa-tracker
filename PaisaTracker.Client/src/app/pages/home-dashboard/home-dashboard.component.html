@@ -19,6 +19,36 @@
 
 <div class="panel">
   <div class="panel-head">
+    <h3>Log Today's Expense</h3>
+    <a routerLink="/home/expenses" class="btn btn-ghost">All Expenses →</a>
+  </div>
+  <div class="panel-body">
+    <div class="quick-form">
+      <div class="field">
+        <label>Date</label>
+        <input type="date" [(ngModel)]="expenseForm.date">
+        <div class="chip-row" style="margin-top:6px">
+          <span class="chip" [class.active]="isYesterday" (click)="setDate('yesterday')">Yesterday</span>
+          <span class="chip" [class.active]="isToday" (click)="setDate('today')">Today</span>
+          <span class="chip" [class.active]="isTomorrow" (click)="setDate('tomorrow')">Tomorrow</span>
+        </div>
+      </div>
+      <div class="field"><label>Amount (₹)</label><input type="number" [(ngModel)]="expenseForm.amount" placeholder="0"></div>
+      <div class="field">
+        <label>Category</label>
+        <input type="text" [(ngModel)]="expenseForm.category" list="dashboard-category-suggestions" placeholder="e.g. Groceries">
+        <datalist id="dashboard-category-suggestions">
+          @for (c of categorySuggestions; track c) { <option [value]="c"></option> }
+        </datalist>
+      </div>
+      <div class="field wide"><label>Description</label><input type="text" [(ngModel)]="expenseForm.note" placeholder="What was this for?"></div>
+      <div class="field"><label>&nbsp;</label><button class="btn btn-primary" [disabled]="saving" (click)="addExpense()">{{ saving ? 'Adding...' : '+ Add' }}</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-head">
     <h3>Bank Accounts</h3>
     <a routerLink="/home/accounts" class="btn btn-ghost">Manage →</a>
   </div>

@@ -15,7 +15,15 @@
   </div>
   <div class="panel-body">
     <div class="quick-form">
-      <div class="field"><label>Date</label><input type="date" [(ngModel)]="form.date"></div>
+      <div class="field">
+        <label>Date</label>
+        <input type="date" [(ngModel)]="form.date">
+        <div class="chip-row" style="margin-top:6px">
+          <span class="chip" [class.active]="isYesterday" (click)="setDate('yesterday')">Yesterday</span>
+          <span class="chip" [class.active]="isToday" (click)="setDate('today')">Today</span>
+          <span class="chip" [class.active]="isTomorrow" (click)="setDate('tomorrow')">Tomorrow</span>
+        </div>
+      </div>
       <div class="field"><label>Amount (₹)</label><input type="number" [(ngModel)]="form.amount" placeholder="0"></div>
       <div class="field">
         <label>Category</label>

@@ -8,6 +8,12 @@ function todayIso(): string {
   return new Date().toISOString().slice(0, 10);
 }
 
+function addDays(iso: string, days: number): string {
+  const d = new Date(iso + 'T00:00:00');
+  d.setDate(d.getDate() + days);
+  return d.toISOString().slice(0, 10);
+}
+
 const PAYMENT_METHODS = ['UPI', 'Cash', 'Credit Card', 'Debit Card', 'Net Banking'];
 
 @Component({
@@ -48,6 +54,15 @@ export class DailyExpensesComponent implements OnInit {
 
   get categorySuggestions(): string[] {
     return [...new Set(this.expenses.map(e => e.category))].sort();
+  }
+
+  get isYesterday(): boolean { return this.form.date === addDays(todayIso(), -1); }
+  get isToday(): boolean { return this.form.date === todayIso(); }
+  get isTomorrow(): boolean { return this.form.date === addDays(todayIso(), 1); }
+
+  setDate(which: 'yesterday' | 'today' | 'tomorrow') {
+    const offset = which === 'yesterday' ? -1 : which === 'tomorrow' ? 1 : 0;
+    this.form.date = addDays(todayIso(), offset);
   }
 
   get totalThisMonth(): number {
