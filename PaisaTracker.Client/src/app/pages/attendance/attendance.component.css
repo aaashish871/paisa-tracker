@@ -1,0 +1,11 @@
+.two-col-grid{ display:grid; grid-template-columns:1fr 1.2fr; gap:20px }
+@media (max-width:980px){ .two-col-grid{ grid-template-columns:1fr } }
+
+.att-dot{
+  display:inline-flex; align-items:center; justify-content:center; width:28px; height:28px; border-radius:7px;
+  font-size:12px; font-weight:700; cursor:pointer; background:var(--surface-2); color:var(--text-faint);
+  user-select:none;
+}
+.att-dot.Present{ background:var(--good-soft); color:var(--good) }
+.att-dot.HalfDay{ background:var(--warn-soft); color:var(--warn) }
+.att-dot.Absent{ background:var(--bad-soft); color:var(--bad) }

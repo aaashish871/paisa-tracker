@@ -1,0 +1,142 @@
+<div class="panel">
+  <div class="panel-head">
+    <h3>Attendance — {{ weekLabel }}</h3>
+    <div style="display:flex; gap:8px">
+      <button class="btn btn-ghost" (click)="prevWeek()">← Prev Week</button>
+      <button class="btn btn-ghost" (click)="nextWeek()">Next Week →</button>
+    </div>
+  </div>
+  <div class="panel-body">
+    @if (loading) {
+      <div class="empty-hint">Loading workers...</div>
+    } @else if (workers.length === 0) {
+      <div class="empty-hint">No workers yet. Add workers on the Workers page first.</div>
+    } @else {
+      <div class="chip-row" style="margin-bottom:14px">
+        <span class="chip">P = Present</span>
+        <span class="chip">H = Half-day</span>
+        <span class="chip">A = Absent</span>
+        <span class="chip">— = Not marked (click to set)</span>
+      </div>
+      <table>
+        <thead>
+          <tr>
+            <th>Worker</th>
+            @for (d of weekDays; track d.getTime()) {
+              <th style="text-align:center">{{ dayLabel(d) }}</th>
+            }
+          </tr>
+        </thead>
+        <tbody>
+          @for (w of workers; track w.id) {
+            <tr>
+              <td>{{ w.name }}</td>
+              @for (d of weekDays; track d.getTime()) {
+                <td style="text-align:center">
+                  <span class="att-dot" [ngClass]="status(w.id, d)" (click)="cycle(w.id, d)">
+                    {{ status(w.id, d) ? statusLabel[status(w.id, d)!] : '—' }}
+                  </span>
+                </td>
+              }
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>
+
+<div class="two-col-grid">
+  <div class="panel">
+    <div class="panel-head">
+      <h3>Advances — {{ monthLabel }}</h3>
+      <button class="btn btn-primary" (click)="openAddAdvance()">+ Add Advance</button>
+    </div>
+    <div class="panel-body">
+      @if (advances.length === 0) {
+        <div class="empty-hint">No advances recorded this month.</div>
+      } @else {
+        <table>
+          <thead><tr><th>Worker</th><th>Date</th><th class="num">Amount</th><th></th></tr></thead>
+          <tbody>
+            @for (a of advances; track a.id) {
+              <tr>
+                <td>{{ workerName(a.workerId) }}<div style="font-size:11px;color:var(--text-faint)">{{ a.notes }}</div></td>
+                <td>{{ a.date | date:'dd MMM yyyy' }}</td>
+                <td class="num">{{ a.amount | currency:'INR':'symbol':'1.0-0' }}</td>
+                <td class="num"><button class="btn btn-danger" (click)="removeAdvance(a)">Delete</button></td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+  </div>
+
+  <div class="panel">
+    <div class="panel-head">
+      <h3>Payable Report</h3>
+      <div style="display:flex; align-items:center; gap:8px">
+        <button class="btn btn-ghost" (click)="changeMonth(-1)">←</button>
+        <strong style="font-size:13px">{{ monthLabel }}</strong>
+        <button class="btn btn-ghost" (click)="changeMonth(1)">→</button>
+      </div>
+    </div>
+    <div class="panel-body">
+      @if (payrollLoading) {
+        <div class="empty-hint">Calculating...</div>
+      } @else if (payrollRows.length === 0) {
+        <div class="empty-hint">No workers to calculate payroll for.</div>
+      } @else {
+        <table>
+          <thead>
+            <tr><th>Worker</th><th class="num">P/H/A</th><th class="num">Gross</th><th class="num">Advances</th><th class="num">Net Payable</th></tr>
+          </thead>
+          <tbody>
+            @for (r of payrollRows; track r.workerId) {
+              <tr>
+                <td>{{ r.name }}</td>
+                <td class="num">{{ r.presentDays }}/{{ r.halfDays }}/{{ r.absentDays }}</td>
+                <td class="num">{{ r.grossEarned | currency:'INR':'symbol':'1.0-0' }}</td>
+                <td class="num">{{ r.advancesTaken | currency:'INR':'symbol':'1.0-0' }}</td>
+                <td class="num" style="font-weight:700">{{ r.netPayable | currency:'INR':'symbol':'1.0-0' }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" [class.show]="showAdvanceModal">
+  <div class="modal">
+    <h3>Add Advance</h3>
+    <div class="field">
+      <label>Worker</label>
+      <select [(ngModel)]="advanceForm.workerId">
+        @for (w of workers; track w.id) {
+          <option [ngValue]="w.id">{{ w.name }}</option>
+        }
+      </select>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Date</label>
+        <input type="date" [(ngModel)]="advanceForm.date">
+      </div>
+      <div class="field">
+        <label>Amount (₹)</label>
+        <input type="number" [(ngModel)]="advanceForm.amount">
+      </div>
+    </div>
+    <div class="field">
+      <label>Notes</label>
+      <input type="text" [(ngModel)]="advanceForm.notes" placeholder="Optional">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" (click)="closeAdvanceModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="saveAdvance()">Save</button>
+    </div>
+  </div>
+</div>

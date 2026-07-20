@@ -25,3 +25,72 @@ export interface CreditCard {
   status: CreditCardStatus;
   notes?: string;
 }
+
+export interface Worker {
+  id: number;
+  name: string;
+  role?: string;
+  phone?: string;
+  monthlySalary: number;
+  joinedDate: string;
+  active: boolean;
+}
+
+export type AttendanceStatus = 'Present' | 'Absent' | 'HalfDay';
+
+export interface AttendanceRecord {
+  id: number;
+  workerId: number;
+  date: string;
+  status: AttendanceStatus;
+}
+
+export interface Advance {
+  id: number;
+  workerId: number;
+  date: string;
+  amount: number;
+  notes?: string;
+}
+
+export interface PayrollRow {
+  workerId: number;
+  name: string;
+  monthlySalary: number;
+  presentDays: number;
+  halfDays: number;
+  absentDays: number;
+  perDayWage: number;
+  grossEarned: number;
+  advancesTaken: number;
+  netPayable: number;
+}
+
+export interface Sale {
+  id: number;
+  date: string;
+  customerName: string;
+  productName: string;
+  quantity: number;
+  amount: number;
+  notes?: string;
+}
+
+export interface Purchase {
+  id: number;
+  date: string;
+  supplierName: string;
+  materialName: string;
+  quantity: number;
+  amount: number;
+  notes?: string;
+}
+
+export interface Expense {
+  id: number;
+  date: string;
+  category: string;
+  paymentMethod: string;
+  note?: string;
+  amount: number;
+}

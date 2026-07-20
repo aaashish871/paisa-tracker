@@ -1,0 +1,89 @@
+<div class="kpi-row">
+  <div class="kpi">
+    <div class="lbl">Active Workers</div>
+    <div class="val">{{ activeCount }}</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Total Monthly Wages</div>
+    <div class="val">{{ totalMonthlyWages | currency:'INR':'symbol':'1.0-0' }}</div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <h3>Workers</h3>
+    <button class="btn btn-primary" (click)="openAdd()">+ Add Worker</button>
+  </div>
+  <div class="panel-body">
+    @if (loading) {
+      <div class="empty-hint">Loading workers...</div>
+    } @else if (error) {
+      <div class="empty-hint">{{ error }}</div>
+    } @else if (workers.length === 0) {
+      <div class="empty-hint">No workers yet. Click "+ Add Worker" to create your first one.</div>
+    } @else {
+      <table>
+        <thead>
+          <tr><th>Name</th><th>Role</th><th>Phone</th><th class="num">Monthly Salary</th><th>Status</th><th></th></tr>
+        </thead>
+        <tbody>
+          @for (w of workers; track w.id) {
+            <tr>
+              <td><span class="avatar-sm">{{ w.name.charAt(0) }}</span>{{ w.name }}</td>
+              <td>{{ w.role || '—' }}</td>
+              <td>{{ w.phone || '—' }}</td>
+              <td class="num">{{ w.monthlySalary | currency:'INR':'symbol':'1.0-0' }}</td>
+              <td><span class="tag" [ngClass]="w.active ? 'good' : 'neutral'">{{ w.active ? 'Active' : 'Inactive' }}</span></td>
+              <td class="num">
+                <button class="btn btn-ghost" (click)="openEdit(w)">Edit</button>
+                <button class="btn btn-danger" (click)="remove(w)">Delete</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>
+
+<div class="modal-backdrop" [class.show]="showModal">
+  <div class="modal">
+    <h3>{{ editingId === null ? 'Add Worker' : 'Edit Worker' }}</h3>
+
+    <div class="field">
+      <label>Name</label>
+      <input type="text" [(ngModel)]="form.name" placeholder="e.g. Ramu Yadav">
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Role</label>
+        <input type="text" [(ngModel)]="form.role" placeholder="e.g. Machine Operator">
+      </div>
+      <div class="field">
+        <label>Phone</label>
+        <input type="text" [(ngModel)]="form.phone" placeholder="Optional">
+      </div>
+    </div>
+    <div class="field-row">
+      <div class="field">
+        <label>Monthly Salary (₹)</label>
+        <input type="number" [(ngModel)]="form.monthlySalary">
+      </div>
+      <div class="field">
+        <label>Joined Date</label>
+        <input type="date" [(ngModel)]="form.joinedDate">
+      </div>
+    </div>
+    <div class="field">
+      <label>
+        <input type="checkbox" [(ngModel)]="form.active" style="width:auto; margin-right:6px;">
+        Active
+      </label>
+    </div>
+
+    <div class="modal-actions">
+      <button class="btn btn-ghost" (click)="closeModal()">Cancel</button>
+      <button class="btn btn-primary" (click)="save()">Save</button>
+    </div>
+  </div>
+</div>

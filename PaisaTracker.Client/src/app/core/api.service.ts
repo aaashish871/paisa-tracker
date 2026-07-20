@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Account, CreditCard } from './models';
+import { Account, CreditCard, Expense } from './models';
 import { environment } from '../../environments/environment';
 
 const BASE_URL = environment.apiUrl;
@@ -34,5 +34,15 @@ export class ApiService {
   }
   deleteCreditCard(id: number): Observable<void> {
     return this.http.delete<void>(`${BASE_URL}/creditcards/${id}`);
+  }
+
+  getExpenses(): Observable<Expense[]> {
+    return this.http.get<Expense[]>(`${BASE_URL}/expenses`);
+  }
+  createExpense(payload: Omit<Expense, 'id'>): Observable<Expense> {
+    return this.http.post<Expense>(`${BASE_URL}/expenses`, payload);
+  }
+  deleteExpense(id: number): Observable<void> {
+    return this.http.delete<void>(`${BASE_URL}/expenses/${id}`);
   }
 }

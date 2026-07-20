@@ -1,0 +1,73 @@
+<div class="kpi-row">
+  <div class="kpi">
+    <div class="lbl">This Month</div>
+    <div class="val">{{ totalThisMonth | currency:'INR':'symbol':'1.0-0' }}</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Total Entries</div>
+    <div class="val">{{ expenses.length }}</div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <h3>Quick Add Expense</h3>
+  </div>
+  <div class="panel-body">
+    <div class="quick-form">
+      <div class="field"><label>Date</label><input type="date" [(ngModel)]="form.date"></div>
+      <div class="field"><label>Amount (₹)</label><input type="number" [(ngModel)]="form.amount" placeholder="0"></div>
+      <div class="field">
+        <label>Category</label>
+        <input type="text" [(ngModel)]="form.category" list="category-suggestions" placeholder="e.g. Groceries (type your own)">
+        <datalist id="category-suggestions">
+          @for (c of categorySuggestions; track c) { <option [value]="c"></option> }
+        </datalist>
+      </div>
+      <div class="field">
+        <label>Payment Method</label>
+        <select [(ngModel)]="form.paymentMethod">
+          @for (m of paymentMethods; track m) { <option [value]="m">{{ m }}</option> }
+        </select>
+      </div>
+      <div class="field wide"><label>Note</label><input type="text" [(ngModel)]="form.note" placeholder="What was this for? (optional)"></div>
+      <div class="field"><label>&nbsp;</label><button class="btn btn-primary" (click)="addExpense()">+ Add</button></div>
+    </div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <h3>All Expenses</h3>
+  </div>
+  <div class="panel-body">
+    <div class="toolbar">
+      <input class="search" [(ngModel)]="search" placeholder="Search category, note, or payment method...">
+    </div>
+    @if (loading) {
+      <div class="empty-hint">Loading expenses...</div>
+    } @else if (error) {
+      <div class="empty-hint">{{ error }}</div>
+    } @else if (filteredExpenses.length === 0) {
+      <div class="empty-hint">No expenses found.</div>
+    } @else {
+      <table>
+        <thead>
+          <tr><th>Date</th><th>Category</th><th>Note</th><th>Method</th><th class="num">Amount</th><th></th></tr>
+        </thead>
+        <tbody>
+          @for (e of filteredExpenses; track e.id) {
+            <tr>
+              <td>{{ e.date | date:'dd MMM yyyy' }}</td>
+              <td>{{ e.category }}</td>
+              <td>{{ e.note || '—' }}</td>
+              <td>{{ e.paymentMethod }}</td>
+              <td class="num">{{ e.amount | currency:'INR':'symbol':'1.0-0' }}</td>
+              <td class="num"><button class="btn btn-danger" (click)="remove(e)">Delete</button></td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>
