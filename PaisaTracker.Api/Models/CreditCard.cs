@@ -10,6 +10,7 @@ public enum CreditCardStatus
 public class CreditCard
 {
     public int Id { get; set; }
+    public string UserId { get; set; } = string.Empty;
     public string Name { get; set; } = string.Empty;
     public string? BankName { get; set; }
     public string? CardNumberLast4 { get; set; }

@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using PaisaTracker.Api.Data;
@@ -7,6 +9,7 @@ namespace PaisaTracker.Api.Controllers;
 
 [ApiController]
 [Route("api/[controller]")]
+[Authorize(Roles = Roles.SuperUser)]
 public class CreditCardsController : ControllerBase
 {
     private readonly PaisaTrackerDbContext _db;
@@ -15,6 +18,8 @@ public class CreditCardsController : ControllerBase
     {
         _db = db;
     }
+
+    private string CurrentUserId => User.FindFirstValue(ClaimTypes.NameIdentifier)!;
 
     public record CreditCardDto(
         string Name,
@@ -31,13 +36,13 @@ public class CreditCardsController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<CreditCard>>> GetAll()
     {
-        return await _db.CreditCards.OrderBy(c => c.DueDate).ToListAsync();
+        return await _db.CreditCards.Where(c => c.UserId == CurrentUserId).OrderBy(c => c.DueDate).ToListAsync();
     }
 
     [HttpGet("{id:int}")]
     public async Task<ActionResult<CreditCard>> GetById(int id)
     {
-        var card = await _db.CreditCards.FindAsync(id);
+        var card = await _db.CreditCards.FirstOrDefaultAsync(c => c.Id == id && c.UserId == CurrentUserId);
         return card is null ? NotFound() : card;
     }
 
@@ -46,6 +51,7 @@ public class CreditCardsController : ControllerBase
     {
         var card = new CreditCard
         {
+            UserId = CurrentUserId,
             Name = dto.Name,
             BankName = dto.BankName,
             CardNumberLast4 = dto.CardNumberLast4,
@@ -65,7 +71,7 @@ public class CreditCardsController : ControllerBase
     [HttpPut("{id:int}")]
     public async Task<IActionResult> Update(int id, CreditCardDto dto)
     {
-        var card = await _db.CreditCards.FindAsync(id);
+        var card = await _db.CreditCards.FirstOrDefaultAsync(c => c.Id == id && c.UserId == CurrentUserId);
         if (card is null) return NotFound();
 
         card.Name = dto.Name;
@@ -87,7 +93,7 @@ public class CreditCardsController : ControllerBase
     [HttpDelete("{id:int}")]
     public async Task<IActionResult> Delete(int id)
     {
-        var card = await _db.CreditCards.FindAsync(id);
+        var card = await _db.CreditCards.FirstOrDefaultAsync(c => c.Id == id && c.UserId == CurrentUserId);
         if (card is null) return NotFound();
 
         _db.CreditCards.Remove(card);

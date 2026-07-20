@@ -1,0 +1,67 @@
+<div class="app-shell" [class.factory-mode]="mode==='factory'">
+
+  <div class="mobile-backdrop" [class.show]="mobileNavOpen" (click)="toggleMobileNav()"></div>
+
+  <div class="sidebar" [class.open]="mobileNavOpen">
+    <div class="brand">
+      <div class="mark">₹</div>
+      <div>
+        <div class="name">Paisa Tracker</div>
+        <div class="sub">personal + factory ops</div>
+      </div>
+    </div>
+
+    @if (isSuperUser) {
+      <div class="mode-switch">
+        <button [class.active]="mode==='home'" class="home-active" (click)="setMode('home')">🏠 Home / Expenses</button>
+        <button [class.active]="mode==='factory'" class="factory-active" (click)="setMode('factory')">🏭 Factory</button>
+      </div>
+
+      <div class="nav">
+        @for (g of navGroups; track g.group) {
+          <div class="group-label">{{ g.group }}</div>
+          @for (item of g.items; track item.path) {
+            <a [routerLink]="item.path" routerLinkActive="active">
+              <span class="ic">{{ item.icon }}</span><span>{{ item.label }}</span>
+            </a>
+          }
+        }
+      </div>
+    }
+
+    @if (isAdmin) {
+      <div class="nav">
+        <div class="group-label">Administration</div>
+        <a routerLink="/admin/users" routerLinkActive="active">
+          <span class="ic">👤</span><span>Users</span>
+        </a>
+      </div>
+    }
+
+    <div class="sidebar-footer">
+      <div class="user-chip">
+        <span class="avatar-sm">{{ initials }}</span>
+        <div>
+          <div class="uname">{{ auth.displayName }}</div>
+          <div class="urole">{{ auth.roles.join(', ') }}</div>
+        </div>
+      </div>
+      <div class="footer-actions">
+        <button class="theme-toggle" (click)="toggleTheme()">🌓</button>
+        <button class="theme-toggle" (click)="logout()">⏻ Logout</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="main">
+    <div class="topbar">
+      <button class="hamburger" (click)="toggleMobileNav()">☰</button>
+      <div class="topbar-spacer"></div>
+      <div class="avatar">{{ initials }}</div>
+    </div>
+    <div class="content">
+      <router-outlet></router-outlet>
+    </div>
+  </div>
+
+</div>

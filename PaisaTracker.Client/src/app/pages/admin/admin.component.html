@@ -1,0 +1,92 @@
+<div class="kpi-row">
+  <div class="kpi">
+    <div class="lbl">Total Users</div>
+    <div class="val">{{ users.length }}</div>
+  </div>
+  <div class="kpi">
+    <div class="lbl">Super Users</div>
+    <div class="val">{{ superUserCount }}</div>
+  </div>
+</div>
+
+<div class="panel">
+  <div class="panel-head">
+    <h3>Users &amp; Roles</h3>
+    <button class="btn btn-primary" (click)="openAdd()">+ Add User</button>
+  </div>
+  <div class="panel-body">
+    @if (loading) {
+      <div class="empty-hint">Loading users...</div>
+    } @else if (error) {
+      <div class="empty-hint">{{ error }}</div>
+    } @else {
+      <table>
+        <thead>
+          <tr><th>Username</th><th>Display Name</th><th>Role</th><th>Created</th><th></th></tr>
+        </thead>
+        <tbody>
+          @for (u of users; track u.id) {
+            <tr>
+              <td><span class="avatar-sm">{{ u.username.charAt(0) }}</span>{{ u.username }}</td>
+              <td>{{ u.displayName || '—' }}</td>
+              <td>
+                <select [ngModel]="u.role" (ngModelChange)="changeRole(u, $event)">
+                  <option value="SuperUser">SuperUser</option>
+                  <option value="Admin">Admin</option>
+                </select>
+              </td>
+              <td>{{ u.createdAt | date:'dd MMM yyyy' }}</td>
+              <td class="num">
+                <button class="btn btn-ghost" (click)="openReset(u)">Reset Password</button>
+                <button class="btn btn-danger" (click)="remove(u)">Delete</button>
+              </td>
+            </tr>
+          }
+        </tbody>
+      </table>
+    }
+  </div>
+</div>
+
+<div class="modal-backdrop" [class.show]="showAddModal">
+  <div class="modal">
+    <h3>Add User</h3>
+    <div class="field">
+      <label>Username</label>
+      <input type="text" [(ngModel)]="addForm.username" placeholder="e.g. ashish">
+    </div>
+    <div class="field">
+      <label>Display Name</label>
+      <input type="text" [(ngModel)]="addForm.displayName" placeholder="Optional">
+    </div>
+    <div class="field">
+      <label>Password</label>
+      <input type="password" [(ngModel)]="addForm.password" placeholder="At least 6 characters">
+    </div>
+    <div class="field">
+      <label>Role</label>
+      <select [(ngModel)]="addForm.role">
+        <option value="SuperUser">SuperUser (full app access)</option>
+        <option value="Admin">Admin (user management only)</option>
+      </select>
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" (click)="closeAdd()">Cancel</button>
+      <button class="btn btn-primary" (click)="createUser()">Create</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" [class.show]="resetTargetId !== null">
+  <div class="modal">
+    <h3>Reset Password</h3>
+    <div class="field">
+      <label>New Password</label>
+      <input type="password" [(ngModel)]="resetPassword" placeholder="At least 6 characters">
+    </div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost" (click)="closeReset()">Cancel</button>
+      <button class="btn btn-primary" (click)="submitReset()">Save</button>
+    </div>
+  </div>
+</div>
